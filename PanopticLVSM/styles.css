@@ -462,11 +462,11 @@ code {
 
 .qualitative-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 0.91fr) minmax(0, 1.09fr);
+  gap: 14px;
   align-items: start;
-  max-width: 100%;
-  margin-top: 18px;
+  max-width: 1120px;
+  margin: 18px auto 0;
 }
 
 .qualitative-grid .figure {
@@ -479,7 +479,7 @@ code {
 
 .qualitative-grid .qualitative-figure img {
   width: 100%;
-  height: 310px;
+  height: auto;
   max-height: none;
   object-fit: contain;
   object-position: top center;
@@ -542,14 +542,15 @@ code {
 }
 
 .result-block h3 {
-  margin: 0;
+  max-width: 1120px;
+  margin: 0 auto;
   font-size: 21px;
   line-height: 1.25;
 }
 
 .result-note {
-  max-width: 980px;
-  margin: 8px 0 0;
+  max-width: 1120px;
+  margin: 8px auto 0;
   color: var(--muted);
   font-family: "Noto Sans", Arial, sans-serif;
   text-align: justify;
@@ -582,10 +583,11 @@ code {
 
 .result-table-row {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 0.91fr) minmax(0, 1.09fr);
+  gap: 14px;
   align-items: start;
-  margin-top: 14px;
+  max-width: 1120px;
+  margin: 14px auto 0;
 }
 
 .wide-qualitative,
@@ -639,6 +641,14 @@ code {
   height: auto;
   max-width: 100%;
   max-height: none;
+}
+
+.low-overlap-table .table-frame {
+  padding: 8px 6px;
+}
+
+.low-overlap-table .table-frame img {
+  width: 84%;
 }
 
 .single-table .table-frame img {
