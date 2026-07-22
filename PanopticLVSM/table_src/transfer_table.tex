@@ -1,0 +1,32 @@
+\documentclass[border=6pt]{standalone}
+\usepackage{booktabs}
+\usepackage{multirow}
+\begin{document}
+\setlength{\tabcolsep}{5pt}
+\small
+\begin{tabular}{@{}lll cccc cccc@{}}
+\toprule
+\multirow{2}{*}{Method} & \multirow{2}{*}{Segmenter} & \multirow{2}{*}{Pose}
+  & \multicolumn{4}{c}{ScanNet}
+  & \multicolumn{4}{c}{Replica (zero-shot)} \\
+\cmidrule(lr){4-7} \cmidrule(lr){8-11}
+ & & & PSNR$\uparrow$ & SSIM$\uparrow$ & PQ$\uparrow$ & mIoU$\uparrow$
+     & PSNR$\uparrow$ & SSIM$\uparrow$ & PQ$\uparrow$ & mIoU$\uparrow$ \\
+\midrule
+SIU3R & M2F (CroCo) & GT
+  & 25.88 & 0.822 & \textbf{0.657} & 0.589
+  & 14.05 & 0.527 & 0.186 & 0.171 \\
+\midrule
+\multirow{3}{*}{Ours} & M2F (DINOv2) & latent
+  & \textbf{33.56} & \textbf{0.911} & 0.609 & \textbf{0.595}
+  & -- & -- & -- & -- \\
+\cmidrule(lr){2-11}
+ & \multirow{2}{*}{PanSt3R} & GT
+  & 25.02 & 0.782 & 0.510 & 0.366
+  & 21.89 & 0.751 & 0.246 & 0.256 \\
+ & & latent
+  & 28.28 & 0.850 & 0.580 & 0.593
+  & \textbf{23.52} & \textbf{0.786} & \textbf{0.394} & \textbf{0.454} \\
+\bottomrule
+\end{tabular}
+\end{document}

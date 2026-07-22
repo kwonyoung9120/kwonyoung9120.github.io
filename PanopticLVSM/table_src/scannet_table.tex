@@ -1,0 +1,21 @@
+\documentclass[border=6pt]{standalone}
+\usepackage{booktabs}
+\usepackage[normalem]{ulem}
+\begin{document}
+\begin{tabular}{l|ccc|cc|cc}
+\toprule
+ & \multicolumn{3}{c|}{Novel View Synthesis} & \multicolumn{2}{c|}{\shortstack{Input Views\\(2D-only)}} & \multicolumn{2}{c}{\shortstack{Novel Views\\(3D-aware)}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+ & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & mIoU$\uparrow$ & PQ$\uparrow$ & mIoU$\uparrow$ & PQ$\uparrow$ \\
+\midrule
+\multicolumn{8}{l}{\textit{2D segmentation}} \\
+Mask2Former & - & - & - & \textbf{0.6186} & 0.5925 & - & - \\
+LSeg & - & - & - & 0.3976 & - & - & - \\
+\midrule
+\multicolumn{8}{l}{\textit{Joint NVS and scene understanding}} \\
+LSM & 20.96 & 0.7245 & 0.3176 & 0.2810 & - & 0.2707 & - \\
+SIU3R & 25.88 & \uline{0.8220} & \uline{0.1831} & \uline{0.5899} & \textbf{0.6565} & \uline{0.5894} & \textbf{0.6565} \\
+\textbf{Ours} & \textbf{33.56} & \textbf{0.9109} & \textbf{0.1149} & \textbf{0.6186} & \uline{0.5949} & \textbf{0.5949} & \uline{0.6092} \\
+\bottomrule
+\end{tabular}
+\end{document}

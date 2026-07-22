@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation</title>
+  <meta name="description" content="Project page for Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <script>
+    document.documentElement.classList.add("is-locked");
+  </script>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260722-results">
+</head>
+<body>
+  <div class="password-gate" role="dialog" aria-labelledby="password-title" aria-modal="true">
+    <form class="password-panel" id="password-form">
+      <p class="password-eyebrow">Private Preview</p>
+      <h2 id="password-title">Project page under construction</h2>
+      <label for="password-input">Password</label>
+      <input id="password-input" name="password" type="password" autocomplete="current-password" autofocus>
+      <button type="submit">Enter</button>
+      <p class="password-error" id="password-error" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <h1>Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation</h1>
+      <p class="venue">ECCV 2026</p>
+
+      <div class="authors" aria-label="Authors">
+        <span><a href="https://kwonyoung9120.github.io/">Kwonyoung Ryu</a><sup>1</sup></span>
+        <span><a href="https://oliver0922.github.io/">In-Jae Lee</a><sup>4</sup></span>
+        <span><a href="https://www.linkedin.com/in/jonghyun-jin-096972259/">Jonghyun Jin</a><sup>2</sup></span>
+        <span><a href="https://hyunji12.github.io/">Hyunjee Lee</a><sup>2</sup></span>
+        <span><a href="https://bluedream1121.github.io/">Jongmin Lee</a><sup>3</sup></span>
+        <span><a href="https://jaesik.info/">Jaesik Park</a><sup>4</sup></span>
+      </div>
+
+      <div class="affiliations">
+        <span><sup>1</sup>POSTECH</span>
+        <span><sup>2</sup>POSCO DX</span>
+        <span><sup>3</sup>Chung-Ang University</span>
+        <span><sup>4</sup>Seoul National University</span>
+      </div>
+
+      <nav class="actions" aria-label="Project links">
+        <a class="button muted" href="#" aria-disabled="true">arXiv (TBD)</a>
+        <a class="button muted" href="#" aria-disabled="true">Code (TBD)</a>
+        <a class="button" href="#bibtex">BibTeX</a>
+      </nav>
+
+      <p class="subtitle">
+        <strong>TL;DR:</strong> Large view synthesis models can act as renderers for panoptic signals,<br>
+        propagating labels to novel viewpoints without explicit 3D&nbsp;reconstruction.
+      </p>
+    </div>
+  </header>
+
+  <nav class="shortcut-nav" aria-label="Section shortcuts">
+    <a href="#abstract">Overview</a>
+    <a href="#method">Method</a>
+    <a href="#results">Results</a>
+    <a href="#references">References</a>
+    <a href="#bibtex">BibTeX</a>
+  </nav>
+
+  <main>
+    <section id="abstract" class="section wrap">
+        <h2><span class="section-kicker">§ 01</span>Overview</h2>
+        <div class="content">
+          <p>
+          Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance.
+          </p>
+        </div>
+      <figure class="figure intro-gif-figure">
+        <img src="assets/intro_gif1_hold.gif" alt="PanopticLVSM introduction animation 1.">
+        <figcaption>
+          When non-photorealistic signals such as binary encoded panoptic labels are passed through the model, they are propagated to novel views with consistent spatial&nbsp;structure.
+        </figcaption>
+      </figure>
+        <div class="content">
+          <p>
+          We present the first work to extend large view synthesis models beyond appearance rendering to 3D scene understanding. Given panoptic labels on the input views, we encode them into binary channel representations and pass them through the same model to render target-view&nbsp;segmentation.
+          </p>
+        </div>
+      <figure class="figure intro-gif-figure intro-gif-figure-small">
+        <img src="assets/intro_gif2_hold.gif" alt="PanopticLVSM introduction animation 2.">
+        <figcaption>
+          Given multi-view panoptic labels, the same frozen rendering path propagates binary label encodings to a novel viewpoint and decodes them into target-view&nbsp;segmentation.
+        </figcaption>
+      </figure>
+      <div class="feature-grid">
+        <article>
+          <h3>LVSM as a Signal Renderer</h3>
+          <p>We show that a large view synthesis model can render view-independent non-RGB signals, not only RGB&nbsp;appearance.</p>
+        </article>
+        <article>
+          <h3>Reconstruction-free Panoptic NVS</h3>
+          <p>We propagate panoptic labels to novel views without NeRF, 3D Gaussians, or segmentation-specific training of the&nbsp;renderer.</p>
+        </article>
+        <article>
+          <h3>Modular Source Segmenters</h3>
+          <p>We decouple source-view segmentation from target-view propagation, allowing different segmenters to supply the input&nbsp;labels.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="method" class="section wrap">
+      <h2><span class="section-kicker">§ 02</span>Method</h2>
+      <p class="section-lead method-lead">
+        Our method operates in two parallel paths through the same large view synthesis model. Given unposed input views, the rendering path synthesizes the target-view image, while the segmentation path encodes the panoptic labels as binary channel encodings and passes them through the same novel view synthesis model to produce target-view segmentation.
+      </p>
+      <figure class="figure medium-figure">
+        <img src="assets/pipeline.png" alt="Overall pipeline for RGB rendering and panoptic propagation.">
+        <figcaption>
+          The view synthesis model is trained only for novel-view RGB synthesis, not for semantic or panoptic segmentation.
+        </figcaption>
+      </figure>
+      <ol class="method-steps">
+        <li><strong>Source view segmentation.</strong> Predict panoptic labels from unposed source images with a source-view segmenter.</li>
+        <li><strong>Encode labels.</strong> Convert discrete panoptic maps into binary channels compatible with RGB rendering.</li>
+        <li><strong>Reuse correspondence.</strong> Propagate label channels through the frozen scene encoder and render decoder.</li>
+        <li><strong>Decode panoptic views.</strong> Decode rendered channels into target-view semantic and instance labels.</li>
+      </ol>
+    </section>
+
+    <section id="results" class="section">
+      <div class="wrap">
+        <h2><span class="section-kicker">§ 03</span>Results</h2>
+
+        <div class="result-block">
+          <h3>Novel View Panoptic Segmentation</h3>
+          <p class="result-note">
+            Panoptic propagation preserves rendering quality while achieving competitive segmentation with a frozen novel view synthesis model. Under sparse geometric overlap, the frozen NVS transformer retains a learned extrapolation capability.
+          </p>
+          <div class="video-grid result-videos">
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/source_scene_01.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Semantic 1</span>
+                <span>Input Semantic 2</span>
+                <span>Rendered Semantic</span>
+              </div>
+            </figure>
+
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/sam2_propagation_01.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Semantic 1</span>
+                <span>Input Semantic 2</span>
+                <span>Rendered Semantic</span>
+              </div>
+            </figure>
+          </div>
+
+          <div class="qualitative-grid">
+            <figure class="figure qualitative-figure">
+              <img src="assets/qualitative_no_legend.png" alt="Qualitative novel-view panoptic segmentation results.">
+            </figure>
+
+            <figure class="figure qualitative-figure low-overlap-figure">
+              <img src="assets/qualitative_low_overlap_4.png" alt="Four low-overlap qualitative comparisons from the supplement.">
+            </figure>
+          </div>
+
+          <div class="result-table-row">
+            <figure class="figure table-figure">
+              <div class="table-frame">
+                <img src="assets/scannet_table.png" alt="Rendered ScanNet comparison table.">
+              </div>
+              <figcaption>
+                ScanNet benchmark: evaluates RGB novel-view synthesis and panoptic segmentation on standard-overlap view pairs.
+              </figcaption>
+            </figure>
+
+            <figure class="figure table-figure">
+              <div class="table-frame">
+                <img src="assets/low_overlap_table.png" alt="Quantitative evaluation under different overlap ranges.">
+              </div>
+              <figcaption>
+                Overlap range evaluation: tests robustness when source and target views share limited geometric overlap.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="result-block">
+          <h3>Modular Composition</h3>
+          <p class="result-note">
+            Our decoupled design lets us replace the source-view segmenter with an off-the-shelf predictor without retraining the rest of the system. The propagation stage can take labels from different source-view segmenters without retraining.
+          </p>
+          <div class="video-grid result-videos">
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/source_scene_03.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/sam2_propagation_03.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/source_scene_04.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/sam2_propagation_04.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+          </div>
+
+          <figure class="figure qualitative-figure wide-qualitative">
+            <img src="assets/sam2.png" alt="SAM2 mask propagation qualitative result.">
+          </figure>
+
+          <figure class="figure table-figure single-table">
+            <div class="table-frame">
+              <img src="assets/transfer_table.png" alt="Rendered modular composition table.">
+            </div>
+            <figcaption>
+              Modular composition: evaluates whether the frozen propagation path works with different source-view segmenters and transfers across datasets.
+            </figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="references" class="section wrap">
+      <h2><span class="section-kicker">Reference</span>References</h2>
+      <ol class="reference-list">
+        <li>Jin et al., <em>LVSM: A Large View Synthesis Model with Minimal 3D Inductive Bias</em>, ICLR 2025.</li>
+        <li>Wang et al., <em>The Less You Depend, The More You Learn: Synthesizing Novel Views from Sparse, Unposed Images without Any 3D Knowledge</em>, ICLR 2026.</li>
+        <li>Fan et al., <em>Large Spatial Model: End-to-end Unposed Images to Semantic 3D</em>, NeurIPS 2024.</li>
+        <li>Xu et al., <em>SIU3R: Simultaneous Scene Understanding and 3D Reconstruction Beyond Feature Alignment</em>, NeurIPS 2025.</li>
+        <li>Cheng et al., <em>Masked-attention Mask Transformer for Universal Image Segmentation</em>, CVPR 2022.</li>
+        <li>Ravi et al., <em>SAM 2: Segment Anything in Images and Videos</em>, ICLR 2025.</li>
+        <li>Zust et al., <em>PanSt3R: Multi-view Consistent Panoptic Segmentation</em>, ICCV 2025.</li>
+      </ol>
+    </section>
+
+    <section id="bibtex" class="section wrap">
+      <h2><span class="section-kicker">Citation</span>BibTeX</h2>
+      <pre><code>TBD</code></pre>
+    </section>
+
+    <section id="acknowledgement" class="section wrap narrow">
+      <h2><span class="section-kicker">Support</span>Acknowledgement</h2>
+      <div class="content">
+        <p>
+          This work was supported by IITP grants RS-2021-II211343, RS-2025-25442338, and RS-2026-25517417.
+          POSCO DX Company, Ltd. provided generous support for this&nbsp;research.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>
+        This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>, which was adopted from the <a href="https://nerfies.github.io/">Nerfies</a> project page.
+      </p>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      var allowedHash = "1ca8c36381c759d9a76ed85f4e293a3d7f1a250b2d0e7f6d193f655546d5c155";
+      var storageKey = "eccv2026-preview-ok";
+      var form = document.getElementById("password-form");
+      var input = document.getElementById("password-input");
+      var error = document.getElementById("password-error");
+
+      function unlock() {
+        document.documentElement.classList.remove("is-locked");
+      }
+
+      function toHex(buffer) {
+        return Array.prototype.map.call(new Uint8Array(buffer), function (byte) {
+          return byte.toString(16).padStart(2, "0");
+        }).join("");
+      }
+
+      async function sha256(value) {
+        var data = new TextEncoder().encode(value);
+        var digest = await crypto.subtle.digest("SHA-256", data);
+        return toHex(digest);
+      }
+
+      if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || sessionStorage.getItem(storageKey) === "1") {
+        unlock();
+        return;
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        error.textContent = "";
+
+        if ((await sha256(input.value)) === allowedHash) {
+          sessionStorage.setItem(storageKey, "1");
+          unlock();
+        } else {
+          input.value = "";
+          error.textContent = "Wrong password.";
+          input.focus();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>
