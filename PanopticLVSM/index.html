@@ -30,7 +30,7 @@
       <p class="venue">ECCV 2026</p>
 
       <div class="authors" aria-label="Authors">
-        <span><a href="https://kwonyoung9120.github.io/">Kwonyoung Ryu</a><sup>1</sup></span>
+        <span><a href="https://kwonyoung9120.github.io/">Kwonyoung Ryu</a><sup>1,4</sup></span>
         <span><a href="https://oliver0922.github.io/">In-Jae Lee</a><sup>4</sup></span>
         <span><a href="https://www.linkedin.com/in/jonghyun-jin-096972259/">Jonghyun Jin</a><sup>2</sup></span>
         <span><a href="https://hyunji12.github.io/">Hyunjee Lee</a><sup>2</sup></span>
@@ -67,7 +67,7 @@
 
   <main>
     <section id="abstract" class="section wrap">
-        <h2><span class="section-kicker">§ 01</span>Overview</h2>
+        <h2>Overview</h2>
         <div class="content">
           <p>
           Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance.
@@ -107,7 +107,7 @@
     </section>
 
     <section id="method" class="section wrap">
-      <h2><span class="section-kicker">§ 02</span>Method</h2>
+      <h2>Method</h2>
       <p class="section-lead method-lead">
         Our method operates in two parallel paths through the same large view synthesis model. Given unposed input views, the rendering path synthesizes the target-view image, while the segmentation path encodes the panoptic labels as binary channel encodings and passes them through the same novel view synthesis model to produce target-view segmentation.
       </p>
@@ -127,7 +127,7 @@
 
     <section id="results" class="section">
       <div class="wrap">
-        <h2><span class="section-kicker">§ 03</span>Results</h2>
+        <h2>Results</h2>
 
         <div class="result-block">
           <h3>Novel View Panoptic Segmentation</h3>
@@ -276,7 +276,7 @@
     </section>
 
     <section id="references" class="section wrap">
-      <h2><span class="section-kicker">Reference</span>References</h2>
+      <h2>References</h2>
       <ol class="reference-list">
         <li>Jin et al., <em>LVSM: A Large View Synthesis Model with Minimal 3D Inductive Bias</em>, ICLR 2025.</li>
         <li>Wang et al., <em>The Less You Depend, The More You Learn: Synthesizing Novel Views from Sparse, Unposed Images without Any 3D Knowledge</em>, ICLR 2026.</li>
@@ -289,15 +289,22 @@
     </section>
 
     <section id="bibtex" class="section wrap">
-      <h2><span class="section-kicker">Citation</span>BibTeX</h2>
-      <pre><code>TBD</code></pre>
+      <h2>BibTeX</h2>
+      <pre><code>@inproceedings{ryu2026extending,
+  title     = {Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation},
+  author    = {Ryu, Kwonyoung and Lee, In-Jae and Jin, Jonghyun and Lee, Hyunjee and Lee, Jongmin and Park, Jaesik},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  year      = {2026}
+}</code></pre>
     </section>
 
     <section id="acknowledgement" class="section wrap narrow">
-      <h2><span class="section-kicker">Support</span>Acknowledgement</h2>
+      <h2>Acknowledgement</h2>
       <div class="content">
         <p>
-          This work was supported by IITP grants RS-2021-II211343, RS-2025-25442338, and RS-2026-25517417.
+          This work was supported by IITP grant (RS-2021-II211343: AI Graduate School Program at Seoul National Univ.,
+          RS-2025-25442338: AI star Fellowship Support Program at Seoul National Univ., and RS-2026-25517417:
+          Development of Compression, Reconstruction, and Rendering Technologies for Free-viewpoint Media).
           POSCO DX Company, Ltd. provided generous support for this&nbsp;research.
         </p>
       </div>
