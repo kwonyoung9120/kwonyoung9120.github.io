@@ -346,6 +346,22 @@ h1 {
   width: 100%;
 }
 
+.publication-thumb-frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  width: 100%;
+}
+
+.publication-thumb-frame .publication-thumb {
+  height: 100%;
+  object-fit: cover;
+}
+
+.publication-thumb-zoom {
+  transform: scale(1.08);
+  transform-origin: center center;
+}
+
 .service-list {
   display: flex;
   flex-direction: column;
