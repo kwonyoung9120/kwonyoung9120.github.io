@@ -5,25 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation</title>
   <meta name="description" content="Project page for Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation.">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <script>
-    document.documentElement.classList.add("is-locked");
-  </script>
+  <meta name="robots" content="index, follow">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=20260722-results">
 </head>
 <body>
-  <div class="password-gate" role="dialog" aria-labelledby="password-title" aria-modal="true">
-    <form class="password-panel" id="password-form">
-      <p class="password-eyebrow">Private Preview</p>
-      <h2 id="password-title">Project page under construction</h2>
-      <label for="password-input">Password</label>
-      <input id="password-input" name="password" type="password" autocomplete="current-password" autofocus>
-      <button type="submit">Enter</button>
-      <p class="password-error" id="password-error" aria-live="polite"></p>
-    </form>
-  </div>
-
   <header class="hero">
     <div class="wrap hero-inner">
       <h1>Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation</h1>
@@ -46,7 +32,7 @@
       </div>
 
       <nav class="actions" aria-label="Project links">
-        <a class="button muted" href="#" aria-disabled="true">arXiv (TBD)</a>
+        <a class="button" href="https://arxiv.org/abs/2607.19765">arXiv</a>
         <a class="button muted" href="#" aria-disabled="true">Code (TBD)</a>
         <a class="button" href="#bibtex">BibTeX</a>
       </nav>
@@ -318,49 +304,5 @@
       </p>
     </div>
   </footer>
-  <script>
-    (function () {
-      var allowedHash = "1ca8c36381c759d9a76ed85f4e293a3d7f1a250b2d0e7f6d193f655546d5c155";
-      var storageKey = "eccv2026-preview-ok";
-      var form = document.getElementById("password-form");
-      var input = document.getElementById("password-input");
-      var error = document.getElementById("password-error");
-
-      function unlock() {
-        document.documentElement.classList.remove("is-locked");
-      }
-
-      function toHex(buffer) {
-        return Array.prototype.map.call(new Uint8Array(buffer), function (byte) {
-          return byte.toString(16).padStart(2, "0");
-        }).join("");
-      }
-
-      async function sha256(value) {
-        var data = new TextEncoder().encode(value);
-        var digest = await crypto.subtle.digest("SHA-256", data);
-        return toHex(digest);
-      }
-
-      if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || sessionStorage.getItem(storageKey) === "1") {
-        unlock();
-        return;
-      }
-
-      form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        error.textContent = "";
-
-        if ((await sha256(input.value)) === allowedHash) {
-          sessionStorage.setItem(storageKey, "1");
-          unlock();
-        } else {
-          input.value = "";
-          error.textContent = "Wrong password.";
-          input.focus();
-        }
-      });
-    }());
-  </script>
 </body>
 </html>
