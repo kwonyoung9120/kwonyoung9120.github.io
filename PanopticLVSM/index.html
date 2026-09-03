@@ -38,8 +38,8 @@
       </nav>
 
       <p class="subtitle">
-        <strong>TL;DR:</strong> A large view synthesis model can act as a renderer for panoptic signals,<br>
-        propagating labels to novel viewpoints without explicit 3D&nbsp;reconstruction.
+        <strong>TL;DR:</strong> We extend a large view synthesis model into a reconstruction-free panoptic renderer<br>
+        that propagates source-view labels to novel viewpoints.
       </p>
     </div>
   </header>
@@ -56,13 +56,13 @@
         <h2>Overview</h2>
         <div class="content">
           <p>
-          Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance.
+          Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We use this learned correspondence to propagate non-RGB signals.
           </p>
         </div>
       <figure class="figure intro-gif-figure">
         <img src="assets/intro_gif1_hold.gif" alt="PanopticLVSM introduction animation 1.">
         <figcaption>
-          When non-photorealistic signals such as binary encoded panoptic labels are passed through the model, they are propagated to novel views with consistent spatial&nbsp;structure.
+          Binary-encoded panoptic labels follow the model's learned cross-view correspondence and appear consistently in novel&nbsp;views.
         </figcaption>
       </figure>
         <div class="content">
@@ -79,7 +79,7 @@
       <div class="feature-grid">
         <article>
           <h3>LVSM as a Signal Renderer</h3>
-          <p>We show that a large view synthesis model can render view-independent non-RGB signals, not only RGB&nbsp;appearance.</p>
+          <p>A large view synthesis model can serve as a renderer for panoptic label channels, not only RGB&nbsp;appearance.</p>
         </article>
         <article>
           <h3>Reconstruction-free Panoptic NVS</h3>
@@ -87,7 +87,7 @@
         </article>
         <article>
           <h3>Modular Source Segmenters</h3>
-          <p>We decouple source-view segmentation from target-view propagation, allowing different segmenters to supply the input&nbsp;labels.</p>
+          <p>The source-view segmenter and the target-view renderer remain modular, so different segmenters can provide input&nbsp;labels.</p>
         </article>
       </div>
     </section>
@@ -95,7 +95,7 @@
     <section id="method" class="section wrap">
       <h2>Method</h2>
       <p class="section-lead method-lead">
-        Our method operates in two parallel paths through the same large view synthesis model. Given unposed input views, the rendering path synthesizes the target-view image, while the segmentation path encodes the panoptic labels as binary channel encodings and passes them through the same novel view synthesis model to produce target-view segmentation.
+        Given unposed source images, our method renders both RGB images and panoptic labels through the same large view synthesis model. We encode source-view panoptic maps as binary channels, propagate them with the frozen rendering path, and decode the rendered channels into target-view semantic and instance labels.
       </p>
       <figure class="figure medium-figure">
         <img src="assets/pipeline.png" alt="Overall pipeline for RGB rendering and panoptic propagation.">
@@ -118,7 +118,7 @@
         <div class="result-block">
           <h3>Novel View Panoptic Segmentation</h3>
           <p class="result-note">
-            Panoptic propagation preserves rendering quality while achieving competitive segmentation with a frozen novel view synthesis model. Under sparse geometric overlap, the frozen NVS transformer retains a learned extrapolation capability.
+            Panoptic propagation preserves rendering quality while achieving competitive segmentation with a frozen novel view synthesis model. The learned correspondence remains effective even when source and target views have limited overlap.
           </p>
           <div class="video-grid result-videos">
             <figure class="figure video-figure">
@@ -184,7 +184,7 @@
         <div class="result-block">
           <h3>Modular Composition</h3>
           <p class="result-note">
-            Our decoupled design lets us replace the source-view segmenter with an off-the-shelf predictor without retraining the rest of the system. The propagation stage can take labels from different source-view segmenters without retraining.
+            The propagation module does not depend on a specific source-view segmenter. It can use labels from trained panoptic models or off-the-shelf mask predictors without retraining the renderer.
           </p>
           <div class="video-grid result-videos">
             <figure class="figure video-figure">
@@ -262,7 +262,7 @@
           <span class="extra-badge">Additional result &middot; not in the paper</span>
           <h3>SAM2 Masks with a Posed View Synthesis Model</h3>
           <p class="result-note">
-            The modular composition above pairs SAM2 source-view masks with an unposed large view synthesis model. The same pairing also works when the renderer is a posed LVSM: SAM2 supplies the source-view masks, the frozen posed model propagates them through the identical rendering path, and the masks arrive at the target viewpoint spatially consistent. Neither component is retrained for this&nbsp;combination.
+            We also test the same label-propagation pipeline with a posed LVSM. SAM2 provides source-view masks, and the frozen posed renderer propagates them to the target view without retraining.
           </p>
           <div class="video-grid result-videos">
             <figure class="figure video-figure">
