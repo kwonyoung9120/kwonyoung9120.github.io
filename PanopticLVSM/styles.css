@@ -480,6 +480,29 @@ code {
   text-wrap: auto;
 }
 
+/* --- SAM2 + posed LVSM (additional result, not in paper) --- */
+.extra-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--band);
+  color: var(--muted);
+  font-family: "Google Sans", "Noto Sans", Arial, sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.result-block.extra-result {
+  max-width: 1120px;
+  margin: 48px auto 0;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
 .video-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

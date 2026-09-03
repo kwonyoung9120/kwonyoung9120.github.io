@@ -7,7 +7,7 @@
   <meta name="description" content="Project page for Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation.">
   <meta name="robots" content="index, follow">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260722-results">
+  <link rel="stylesheet" href="styles.css?v=20260903-posed">
 </head>
 <body>
   <header class="hero">
@@ -256,6 +256,42 @@
               Modular composition: evaluates whether the frozen propagation path works with different source-view segmenters and transfers across datasets.
             </figcaption>
           </figure>
+        </div>
+
+        <div class="result-block extra-result">
+          <span class="extra-badge">Additional result &middot; not in the paper</span>
+          <h3>SAM2 Masks with a Posed View Synthesis Model</h3>
+          <p class="result-note">
+            The modular composition above pairs SAM2 source-view masks with an unposed large view synthesis model. The same pairing also works when the renderer is a posed LVSM: SAM2 supplies the source-view masks, the frozen posed model propagates them through the identical rendering path, and the masks arrive at the target viewpoint spatially consistent. Neither component is retrained for this&nbsp;combination.
+          </p>
+          <div class="video-grid result-videos">
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/posed_lvsm_sam2_01.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+            <figure class="figure video-figure">
+              <div class="video-label-row video-label-top">
+                <span>Input Image 1</span>
+                <span>Input Image 2</span>
+                <span>Rendered RGB</span>
+              </div>
+              <video controls autoplay muted loop playsinline preload="metadata" src="assets/videos/posed_lvsm_sam2_02.mp4"></video>
+              <div class="video-label-row video-label-bottom">
+                <span>Input Mask 1</span>
+                <span>Input Mask 2</span>
+                <span>Rendered Mask</span>
+              </div>
+            </figure>
+          </div>
         </div>
 
       </div>
