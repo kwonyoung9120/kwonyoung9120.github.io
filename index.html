@@ -6,7 +6,7 @@
     <meta name="author" content="Kwonyoung Ryu">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="stylesheet.css?v=20260619">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css?v=20260905b">
   </head>
 
   <body>
@@ -21,7 +21,7 @@
         <a href="#education">education</a>
         <span>&middot;</span>
         <a href="#service">service</a>
-        <button class="theme-toggle" type="button" aria-pressed="false">Light mode</button>
+        <button class="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
       </nav>
 
       <header id="home" class="hero">
@@ -62,7 +62,7 @@
 
       <section id="news" class="section">
         <h2>News</h2>
-        <div class="timeline">
+        <div class="timeline news-timeline">
           <div class="timeline-row">
             <div class="timeline-date">Sep 2026</div>
             <div class="timeline-body">
@@ -91,6 +91,7 @@
             </div>
           </div>
         </div>
+        <button class="news-toggle" type="button" hidden></button>
       </section>
 
       <section id="education" class="section">
@@ -266,19 +267,38 @@
 
     <script>
       const themeToggle = document.querySelector('.theme-toggle');
-      const themeStorageKey = 'theme-v2';
-      const setTheme = (isLight, shouldStore = true) => {
-        document.body.classList.toggle('light-mode', isLight);
-        themeToggle.textContent = isLight ? 'Dark mode' : 'Light mode';
-        themeToggle.setAttribute('aria-pressed', String(isLight));
+      const themeStorageKey = 'theme-v3';
+      const setTheme = (isDark, shouldStore = true) => {
+        document.body.classList.toggle('dark-mode', isDark);
+        themeToggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        themeToggle.setAttribute('aria-pressed', String(isDark));
         if (shouldStore) {
-          localStorage.setItem(themeStorageKey, isLight ? 'light' : 'dark');
+          localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light');
         }
       };
-      setTheme(localStorage.getItem(themeStorageKey) === 'light', false);
+      setTheme(localStorage.getItem(themeStorageKey) === 'dark', false);
       themeToggle.addEventListener('click', () => {
-        setTheme(!document.body.classList.contains('light-mode'));
+        setTheme(!document.body.classList.contains('dark-mode'));
       });
+
+      const newsVisibleCount = 4;
+      const newsRows = Array.from(document.querySelectorAll('.news-timeline .timeline-row'));
+      const newsToggle = document.querySelector('.news-toggle');
+      if (newsRows.length > newsVisibleCount) {
+        const hidden = newsRows.slice(newsVisibleCount);
+        const render = (expanded) => {
+          hidden.forEach((row) => { row.hidden = !expanded; });
+          newsToggle.textContent = expanded
+            ? 'Show less'
+            : 'Show ' + hidden.length + ' older item' + (hidden.length > 1 ? 's' : '');
+          newsToggle.setAttribute('aria-expanded', String(expanded));
+        };
+        newsToggle.hidden = false;
+        render(false);
+        newsToggle.addEventListener('click', () => {
+          render(newsToggle.getAttribute('aria-expanded') !== 'true');
+        });
+      }
     </script>
   </body>
 </html>
