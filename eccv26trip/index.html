@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>북유럽 여행 정산 장부</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F3F6F7; --surface:#FFFFFF; --surface-2:#E9EEF1; --sunk:#F7F9FA;
+  --ink:#0F1820; --ink-2:#485866; --ink-3:#7C8B98;
+  --line:#D6DEE4; --line-soft:#E5EBEF;
+  --accent:#16466B; --accent-soft:#E4EDF5;
+  --sek:#2F5FA8; --dkk:#C0373D; --krw:#5A6B52;
+  --pos:#0E6E63; --pos-soft:#DFF0ED;
+  --neg:#9C5510; --neg-soft:#F7EADB;
+  --shadow:0 1px 2px rgba(15,24,32,.05), 0 8px 24px -16px rgba(15,24,32,.28);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141A; --surface:#161E26; --surface-2:#1D2830; --sunk:#121A21;
+    --ink:#E9EFF3; --ink-2:#A6B5C1; --ink-3:#72828E;
+    --line:#293540; --line-soft:#212C35;
+    --accent:#8CBBE2; --accent-soft:#1B2A38;
+    --sek:#7BA6E4; --dkk:#E8797E; --krw:#A3BC92;
+    --pos:#4FC8B3; --pos-soft:#12302E;
+    --neg:#E0A55E; --neg-soft:#33251492;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#161E26; --surface-2:#1D2830; --sunk:#121A21;
+  --ink:#E9EFF3; --ink-2:#A6B5C1; --ink-3:#72828E;
+  --line:#293540; --line-soft:#212C35;
+  --accent:#8CBBE2; --accent-soft:#1B2A38;
+  --sek:#7BA6E4; --dkk:#E8797E; --krw:#A3BC92;
+  --pos:#4FC8B3; --pos-soft:#12302E;
+  --neg:#E0A55E; --neg-soft:#332514;
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+img{max-width:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  font-size:15px; line-height:1.55; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px; margin:0 auto; padding:28px 20px 80px; display:flex; flex-direction:column; gap:26px}
+h1,h2,h3{margin:0; text-wrap:balance}
+.num{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
+
+/* ---- header ---- */
+header{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:18px}
+.brand h1{font-family:"Gowun Batang", serif; font-size:30px; font-weight:700; letter-spacing:-.01em}
+.brand p{margin:4px 0 0; color:var(--ink-3); font-size:13px}
+.rates{display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap}
+.rate{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 11px; box-shadow:var(--shadow)}
+.rate label{display:block; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px}
+.rate .row{display:flex; align-items:baseline; gap:5px}
+.rate input{
+  width:96px; border:none; background:transparent; color:var(--ink);
+  font-family:"IBM Plex Mono", monospace; font-size:16px; font-weight:600;
+  font-variant-numeric:tabular-nums; padding:0; text-align:right;
+}
+.rate input:focus{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+.rate .unit{font-size:11px; color:var(--ink-3)}
+
+/* ---- notice ---- */
+.notice{
+  display:flex; gap:14px; align-items:flex-start;
+  background:var(--accent-soft); border:1px solid var(--accent); border-left-width:3px;
+  border-radius:12px; padding:13px 16px;
+}
+.ntag{
+  flex:none; font-size:10.5px; letter-spacing:.12em; font-weight:700; color:var(--accent);
+  border:1px solid var(--accent); border-radius:4px; padding:2px 7px; margin-top:2px;
+}
+.nitems{display:flex; flex-direction:column; gap:6px; min-width:0}
+.nitem{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap}
+.nk{flex:none; width:56px; font-size:11.5px; color:var(--ink-3)}
+.nv{font-size:15px; color:var(--ink); word-break:break-word}
+.nv.num{font-size:19px; font-weight:600; letter-spacing:.12em}
+
+/* ---- balance strip ---- */
+.balances{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px}
+.bal{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:13px 15px; display:flex; flex-direction:column; gap:2px; position:relative; overflow:hidden;
+}
+.bal::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--line)}
+.bal.p::before{background:var(--pos)} .bal.n::before{background:var(--neg)}
+.bal .who{font-size:14px; font-weight:600}
+.bal .amt{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.bal.p .amt{color:var(--pos)} .bal.n .amt{color:var(--neg)}
+.bal .tag{font-size:11px; color:var(--ink-3)}
+.bal .sub{font-size:11.5px; color:var(--ink-3); margin-top:4px}
+
+/* ---- panels ---- */
+section.panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow)}
+.phead{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line-soft); flex-wrap:wrap}
+.phead h2{font-size:14px; font-weight:600; letter-spacing:.02em}
+.phead .hint{font-size:12px; color:var(--ink-3)}
+.pbody{padding:18px}
+
+/* ---- form ---- */
+.form{display:grid; grid-template-columns:repeat(12,1fr); gap:14px}
+.f{display:flex; flex-direction:column; gap:6px}
+.f label{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:500}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  font-family:inherit; font-size:14px; color:var(--ink); background:var(--sunk);
+  border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%;
+}
+input[type=number]{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:transparent}
+.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chip{
+  font-family:inherit; font-size:13.5px; color:var(--ink-2); background:var(--sunk);
+  border:1px solid var(--line); border-radius:999px; padding:6px 13px; cursor:pointer;
+  transition:background .12s, color .12s, border-color .12s;
+}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--surface); font-weight:600}
+:root[data-theme="dark"] .chip[aria-pressed="true"], :root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0E141A}
+.chip.ghost[aria-pressed="true"]{background:var(--accent-soft); color:var(--accent); border-color:var(--accent)}
+.chip:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.customgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-top:4px}
+.cg{display:flex; align-items:center; gap:8px; background:var(--sunk); border:1px solid var(--line); border-radius:9px; padding:6px 10px}
+.cg span{font-size:13px; white-space:nowrap}
+.cg input{border:none; background:transparent; padding:0; text-align:right; font-size:14px}
+.cg input:focus{outline:none}
+.formfoot{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:16px}
+.warn{font-size:12.5px; color:var(--dkk); min-height:18px}
+button.go{
+  font-family:inherit; font-size:14px; font-weight:600; color:var(--surface); background:var(--accent);
+  border:none; border-radius:9px; padding:10px 22px; cursor:pointer;
+}
+:root[data-theme="dark"] button.go, :root:not([data-theme="light"]) button.go{color:#0E141A}
+button.go:hover{filter:brightness(1.1)}
+button.go[disabled]{opacity:.45; cursor:not-allowed}
+button.mini{
+  font-family:inherit; font-size:12.5px; color:var(--ink-2); background:var(--sunk);
+  border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer;
+}
+button.mini:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ---- ledger ---- */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th{
+  font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3);
+  font-weight:500; text-align:left; padding:0 12px 9px; border-bottom:1px solid var(--line);
+}
+th.r,td.r{text-align:right}
+td{padding:11px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:14px}
+tr.ex:hover td{background:var(--sunk)}
+.cur{
+  display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.06em; padding:2px 6px; border-radius:4px; color:#fff; vertical-align:2px; margin-left:6px;
+}
+.cur.SEK{background:var(--sek)} .cur.DKK{background:var(--dkk)} .cur.KRW{background:var(--krw)}
+.who-pill{font-size:12px; color:var(--ink-2); background:var(--surface-2); border-radius:5px; padding:1px 6px; margin-right:4px; display:inline-block}
+.note{color:var(--ink); }
+.date{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink-3)}
+.rowacts{display:flex; gap:6px; justify-content:flex-end}
+.iconbtn{background:none; border:none; color:var(--ink-3); cursor:pointer; font-size:12px; font-family:inherit; padding:2px 4px; border-radius:5px}
+.iconbtn:hover{color:var(--accent); background:var(--accent-soft)}
+.breakdown{font-size:12px; color:var(--ink-3); margin-top:5px; display:flex; flex-wrap:wrap; gap:4px 12px}
+.breakdown b{font-weight:500; color:var(--ink-2)}
+.iconbtn.del{color:var(--dkk)}
+.iconbtn.del:hover{background:var(--neg-soft); color:var(--dkk)}
+.iconbtn.armed{color:#fff; background:var(--dkk); font-weight:600}
+.iconbtn.armed:hover{color:#fff; background:var(--dkk)}
+.toast{
+  position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px; z-index:50;
+  background:var(--ink); color:var(--bg); border-radius:10px; padding:11px 14px 11px 18px;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.5); font-size:13.5px; max-width:calc(100vw - 28px);
+}
+.toast button{background:transparent; border:1px solid currentColor; color:inherit; border-radius:7px; padding:5px 12px; font-family:inherit; font-size:12.5px; cursor:pointer}
+.toast button:hover{background:rgba(255,255,255,.14)}
+.empty{padding:34px 18px; text-align:center; color:var(--ink-3); font-size:13.5px}
+tr.sample td{opacity:.42; font-style:normal}
+
+/* ---- settlement ---- */
+.tx{display:flex; flex-direction:column; gap:0}
+.txrow{display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--line-soft); flex-wrap:wrap}
+.txrow:last-child{border-bottom:none}
+.txrow .arrow{display:flex; align-items:center; gap:9px; font-size:15px; flex:1 1 220px}
+.txrow .arrow em{font-style:normal; font-weight:600}
+.txrow .arrow .ar{color:var(--ink-3); font-family:"IBM Plex Mono",monospace}
+.txrow .val{font-family:"IBM Plex Mono",monospace; font-size:17px; font-weight:600; font-variant-numeric:tabular-nums}
+.settled{color:var(--pos); font-size:13px; display:flex; align-items:center; gap:6px}
+.donelist{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-3); display:flex; flex-direction:column; gap:5px}
+.donelist .d{display:flex; gap:8px; align-items:center}
+.stat{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:10px; overflow:hidden; margin-bottom:18px}
+.stat div{background:var(--surface); padding:12px 14px}
+.stat .k{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)}
+.stat .v{font-family:"IBM Plex Mono",monospace; font-size:19px; font-weight:600; font-variant-numeric:tabular-nums; margin-top:2px}
+.detail{width:100%; min-width:520px}
+footer{color:var(--ink-3); font-size:12px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.status{font-size:11.5px; color:var(--ink-3); display:flex; align-items:center; gap:6px}
+.dot{width:6px; height:6px; border-radius:50%; background:var(--ink-3); display:inline-block}
+.dot.live{background:var(--pos)}
+textarea.export{min-height:150px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; margin-top:12px}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+@media (max-width:640px){
+  .wrap{padding:20px 14px 60px}
+  .brand h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>북유럽 여행 정산 장부</h1>
+      <p>권영 · 철홍 · 단을 · 재윤 · 다은 · 재아 &nbsp;|&nbsp; 스웨덴 크로나와 덴마크 크로네를 원화로 환산해 한 번에 정산합니다</p>
+    </div>
+    <div class="rates">
+      <div class="rate">
+        <label>1 SEK</label>
+        <div class="row"><input id="rateSEK" type="number" step="0.0001" min="0" value="145.0000"><span class="unit">원</span></div>
+      </div>
+      <div class="rate">
+        <label>1 DKK</label>
+        <div class="row"><input id="rateDKK" type="number" step="0.0001" min="0" value="216.0000"><span class="unit">원</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="notice">
+    <span class="ntag">공지</span>
+    <div class="nitems">
+      <div class="nitem">
+        <span class="nk">집 비번</span>
+        <span class="nv num">219750</span>
+      </div>
+      <div class="nitem">
+        <span class="nk">집 주소</span>
+        <span class="nv">Borrebackevägen 235 Hus, Väster, Skåne län 218 51, Sweden</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="balances" id="balances"></div>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>지출 기록하기</h2>
+      <span class="hint" id="formHint">카드 긁은 사람과 나눠 쓴 사람을 고르면 자동으로 나뉩니다</span>
+    </div>
+    <div class="pbody">
+      <div class="form">
+        <div class="f" style="grid-column:span 3"><label for="fDate">날짜</label><input id="fDate" type="date"></div>
+        <div class="f" style="grid-column:span 3"><label for="fAmount">금액</label><input id="fAmount" type="number" step="0.01" min="0" placeholder="0"></div>
+        <div class="f" style="grid-column:span 2"><label for="fCur">통화</label>
+          <select id="fCur"><option>SEK</option><option>DKK</option><option>KRW</option></select>
+        </div>
+        <div class="f" style="grid-column:span 4"><label for="fNote">내용</label><input id="fNote" type="text" placeholder="예: 10일 점심 - Restaurang Prinsen"></div>
+
+        <div class="f" style="grid-column:span 12"><label>결제한 사람 (카드 긁은 사람)</label>
+          <div class="chips" id="payerChips"></div>
+        </div>
+
+        <div class="f" style="grid-column:span 12">
+          <label>같이 쓴 사람</label>
+          <div class="chips" id="partChips"></div>
+        </div>
+
+        <div class="f" style="grid-column:span 12">
+          <label>분담 방식</label>
+          <div class="chips">
+            <button type="button" class="chip ghost" id="modeEqual" aria-pressed="true">균등 분할</button>
+            <button type="button" class="chip ghost" id="modeCustom" aria-pressed="false">금액 직접 지정</button>
+          </div>
+          <div class="customgrid" id="customGrid" hidden></div>
+        </div>
+      </div>
+      <div class="formfoot">
+        <div class="warn" id="formWarn"></div>
+        <div style="display:flex; gap:8px">
+          <button class="mini" id="cancelEdit" hidden>수정 취소</button>
+          <button class="go" id="submitBtn">기록 추가</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>지출 내역</h2>
+      <span class="hint" id="ledgerHint"></span>
+    </div>
+    <div class="tablewrap">
+      <table id="ledger"></table>
+    </div>
+    <div class="empty" id="ledgerEmpty" hidden>아직 기록이 없습니다. 위에서 첫 지출을 추가해 보세요.</div>
+  </section>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>최종 정산</h2>
+      <span class="hint">송금 횟수가 가장 적어지도록 계산했습니다</span>
+    </div>
+    <div class="pbody">
+      <div class="stat" id="stat"></div>
+      <div class="tx" id="tx"></div>
+      <div class="donelist" id="doneList" hidden></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>1인별 상세</h2>
+      <span class="hint">낸 돈, 쓴 돈, 차액을 그대로 펼쳐 둡니다</span>
+    </div>
+    <div class="tablewrap" style="padding:0 18px 18px">
+      <table class="detail" id="detail"></table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>기록 내보내기</h2>
+      <span class="hint">카톡에 붙여넣을 요약, 또는 원본 데이터 백업</span>
+    </div>
+    <div class="pbody">
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <button class="mini" id="btnSummary">정산 요약 텍스트</button>
+        <button class="mini" id="btnJson">JSON 백업</button>
+        <button class="mini" id="btnImport">JSON 복원</button>
+        <button class="mini" id="btnClose">닫기</button>
+      </div>
+      <textarea class="export" id="exportBox" hidden spellcheck="false"></textarea>
+      <div style="display:flex; gap:8px; margin-top:8px" id="importRow" hidden>
+        <button class="mini" id="btnImportGo">이 내용으로 덮어쓰기</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>환율은 소수점 넷째 자리까지, 지출 금액은 둘째 자리까지 넣을 수 있습니다. 환율을 바꾸면 모든 금액이 즉시 다시 계산됩니다.</span>
+    <span class="status" id="status"><span class="dot"></span><span id="statusText">저장소 확인 중</span></span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" hidden><span id="toastText"></span><button id="toastUndo">되돌리기</button></div>
+
+<!-- ============================================================
+     Firebase 설정: 아래 FIREBASE_CONFIG 값만 본인 것으로 바꾸면
+     6명이 실시간으로 같은 장부를 공유합니다.
+     값이 비어 있으면 각자 브라우저에만 저장됩니다.
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+var TRIP_ID = "eccv26trip";
+var FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+</script>
+
+<script>
+(function(){
+"use strict";
+
+var MEMBERS = ["권영","철홍","단을","재윤","다은","재아"];
+var CURS = ["SEK","DKK","KRW"];
+var LS_KEY = "nordic-ledger-v1";
+
+var state = {
+  rates: {SEK:145, DKK:216, KRW:1},
+  expenses: [],   // {id,date,amount,cur,payer,parts[],mode,custom{},note,ts}
+  payments: []    // {id,from,to,amount,ts}
+};
+var db = null;
+var edit = { id:null };
+var form = { payer:"권영", parts:MEMBERS.slice(), mode:"equal", custom:{} };
+
+/* ---------- helpers ---------- */
+function el(id){ return document.getElementById(id); }
+function won(n){ return Math.round(n).toLocaleString("ko-KR"); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function today(){ var d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+/* ---------- math ---------- */
+function toKRW(amount, cur){ return Math.round(amount * (state.rates[cur] || 0)); }
+
+// 외화는 소수점 둘째 자리까지, 원화는 정수로 표시
+function fmtAmt(amount, cur){
+  var n = Number(amount) || 0;
+  if(cur === "KRW") return n.toLocaleString("ko-KR", {maximumFractionDigits:0});
+  return n.toLocaleString("ko-KR", {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+// 환율은 넣은 만큼만 (최대 소수점 넷째 자리)
+function fmtRate(v){
+  return Number(v || 0).toLocaleString("ko-KR", {minimumFractionDigits:2, maximumFractionDigits:4});
+}
+
+function sharesOf(e){
+  // returns {member: krw} summing exactly to toKRW(e.amount, e.cur)
+  var total = toKRW(e.amount, e.cur);
+  var parts = (e.parts && e.parts.length) ? e.parts : [e.payer];
+  var out = {};
+  if(e.mode === "custom" && e.custom){
+    var sum = 0;
+    parts.forEach(function(m){
+      var v = Math.round((Number(e.custom[m]) || 0) * (state.rates[e.cur] || 0));
+      out[m] = v; sum += v;
+    });
+    var diff = total - sum;
+    if(diff !== 0){
+      var biggest = parts.slice().sort(function(a,b){ return (out[b]||0)-(out[a]||0); })[0];
+      if(biggest) out[biggest] += diff;
+    }
+  } else {
+    var n = parts.length;
+    var base = Math.floor(total / n);
+    var rem = total - base * n;
+    parts.forEach(function(m,i){ out[m] = base + (i < rem ? 1 : 0); });
+  }
+  return out;
+}
+
+function compute(){
+  var paid = {}, used = {}, bal = {};
+  MEMBERS.forEach(function(m){ paid[m]=0; used[m]=0; });
+  var totalKRW = 0;
+  state.expenses.forEach(function(e){
+    var t = toKRW(e.amount, e.cur);
+    totalKRW += t;
+    paid[e.payer] = (paid[e.payer]||0) + t;
+    var s = sharesOf(e);
+    Object.keys(s).forEach(function(m){ used[m] = (used[m]||0) + s[m]; });
+  });
+  MEMBERS.forEach(function(m){ bal[m] = paid[m] - used[m]; });
+  // 이미 송금한 내역 반영
+  state.payments.forEach(function(p){
+    bal[p.from] = (bal[p.from]||0) + p.amount;
+    bal[p.to]   = (bal[p.to]||0) - p.amount;
+  });
+  return {paid:paid, used:used, bal:bal, totalKRW:totalKRW};
+}
+
+function settle(bal){
+  var cred=[], deb=[];
+  MEMBERS.forEach(function(m){
+    var v = Math.round(bal[m]||0);
+    if(v > 0) cred.push({m:m, v:v});
+    else if(v < 0) deb.push({m:m, v:-v});
+  });
+  cred.sort(function(a,b){ return b.v-a.v; });
+  deb.sort(function(a,b){ return b.v-a.v; });
+  var tx=[], i=0, j=0, guard=0;
+  while(i<deb.length && j<cred.length && guard++ < 200){
+    var amt = Math.min(deb[i].v, cred[j].v);
+    if(amt > 0) tx.push({from:deb[i].m, to:cred[j].m, amount:amt});
+    deb[i].v -= amt; cred[j].v -= amt;
+    if(deb[i].v === 0) i++;
+    if(cred[j].v === 0) j++;
+  }
+  return tx;
+}
+
+/* ---------- storage ---------- */
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({rates:state.rates, expenses:state.expenses, payments:state.payments})); }catch(err){}
+}
+function loadLocal(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    var o = JSON.parse(raw);
+    if(o.rates) state.rates = Object.assign(state.rates, o.rates);
+    if(Array.isArray(o.expenses)) state.expenses = o.expenses;
+    if(Array.isArray(o.payments)) state.payments = o.payments;
+  }catch(err){}
+}
+
+function putConfig(){
+  if(db){ db.doc("trip/config").set({rates:state.rates, updatedAt:Date.now()}).catch(noteErr); }
+  else saveLocal();
+}
+function putExpense(e){
+  if(db){ db.doc("expenses/"+e.id).set(e).catch(noteErr); }
+  else { var i = state.expenses.findIndex(function(x){return x.id===e.id;});
+         if(i>=0) state.expenses[i]=e; else state.expenses.push(e); saveLocal(); render(); }
+}
+function delExpense(id){
+  var gone = state.expenses.filter(function(x){ return x.id === id; })[0];
+  if(db){ db.doc("expenses/"+id).delete().catch(noteErr); }
+  else { state.expenses = state.expenses.filter(function(x){return x.id!==id;}); saveLocal(); render(); }
+  if(edit.id === id) resetForm();
+  if(gone){
+    toast("삭제했습니다: " + (gone.note || fmtAmt(gone.amount, gone.cur) + " " + gone.cur), function(){
+      putExpense(gone);
+    });
+  }
+}
+
+var toastTimer = null;
+function toast(text, undo){
+  var box = el("toast"), btn = el("toastUndo");
+  el("toastText").textContent = text;
+  box.hidden = false;
+  btn.hidden = !undo;
+  btn.onclick = function(){ box.hidden = true; if(undo) undo(); };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ box.hidden = true; }, 8000);
+}
+function putPayment(p){
+  if(db){ db.doc("payments/"+p.id).set(p).catch(noteErr); }
+  else { state.payments.push(p); saveLocal(); render(); }
+}
+function delPayment(id){
+  if(db){ db.doc("payments/"+id).delete().catch(noteErr); }
+  else { state.payments = state.payments.filter(function(x){return x.id!==id;}); saveLocal(); render(); }
+}
+function noteErr(e){
+  var t = el("statusText");
+  if(t) t.textContent = "저장 실패: " + ((e && e.code) || "알 수 없는 오류") + " · 다시 시도해 주세요";
+}
+
+/* ---------- render: balances ---------- */
+function renderBalances(c){
+  var box = el("balances"); box.innerHTML = "";
+  MEMBERS.forEach(function(m){
+    var v = Math.round(c.bal[m]||0);
+    var d = document.createElement("div");
+    d.className = "bal" + (v>0?" p":(v<0?" n":""));
+    d.innerHTML =
+      '<span class="who">'+esc(m)+'</span>' +
+      '<span class="amt">'+(v===0?"0":(v>0?"+":"-")+won(Math.abs(v)))+'</span>' +
+      '<span class="tag">'+(v>0?"받을 돈":(v<0?"보낼 돈":"정산 완료"))+'</span>' +
+      '<span class="sub">낸 돈 '+won(c.paid[m]||0)+' · 쓴 돈 '+won(c.used[m]||0)+'</span>';
+    box.appendChild(d);
+  });
+}
+
+/* ---------- render: ledger ---------- */
+function renderLedger(){
+  var t = el("ledger");
+  var rows = state.expenses.slice().sort(function(a,b){
+    if(a.date === b.date) return (a.ts||0)-(b.ts||0);
+    return a.date < b.date ? -1 : 1;
+  });
+  el("ledgerEmpty").hidden = rows.length > 0;
+  el("ledgerHint").textContent = rows.length ? (rows.length + "건 · 합계 " + won(rows.reduce(function(s,e){return s+toKRW(e.amount,e.cur);},0)) + "원") : "";
+
+  var head = '<thead><tr><th style="width:92px">날짜</th><th>내용</th><th style="width:110px">결제</th>' +
+             '<th class="r" style="width:130px">금액</th><th class="r" style="width:120px">원화</th><th style="width:70px"></th></tr></thead>';
+  var body = "";
+  if(!rows.length){
+    body = '<tr class="ex sample"><td class="date">2026-09-10</td>' +
+      '<td><span class="note">예시: 10일 점심 - Restaurang Prinsen</span>' +
+      '<div class="breakdown"><span><b>권영</b> 21,750</span><span><b>철홍</b> 21,750</span><span><b>다은</b> 21,750</span></div></td>' +
+      '<td><span class="who-pill">권영</span></td>' +
+      '<td class="r num">450.00<span class="cur SEK">SEK</span></td>' +
+      '<td class="r num">65,250</td><td></td></tr>';
+  }
+  rows.forEach(function(e){
+    var s = sharesOf(e);
+    var parts = (e.parts && e.parts.length) ? e.parts : [e.payer];
+    var bd = parts.map(function(m){ return '<span><b>'+esc(m)+'</b> '+won(s[m]||0)+'</span>'; }).join("");
+    body += '<tr class="ex">' +
+      '<td class="date">'+esc(e.date)+'</td>' +
+      '<td><span class="note">'+esc(e.note || "(내용 없음)")+'</span>' +
+        (e.mode==="custom" ? ' <span style="font-size:11px;color:var(--ink-3)">· 직접 지정</span>' : '') +
+        '<div class="breakdown">'+bd+'</div></td>' +
+      '<td><span class="who-pill">'+esc(e.payer)+'</span></td>' +
+      '<td class="r num">'+fmtAmt(e.amount, e.cur)+'<span class="cur '+e.cur+'">'+e.cur+'</span></td>' +
+      '<td class="r num">'+won(toKRW(e.amount,e.cur))+'</td>' +
+      '<td><div class="rowacts">' +
+        '<button class="iconbtn" data-edit="'+e.id+'">수정</button>' +
+        '<button class="iconbtn del" data-del="'+e.id+'">삭제</button>' +
+      '</div></td></tr>';
+  });
+  t.innerHTML = head + "<tbody>" + body + "</tbody>";
+
+  Array.prototype.forEach.call(t.querySelectorAll("[data-del]"), function(b){
+    var armed = false, timer = null;
+    b.addEventListener("click", function(){
+      if(armed){ clearTimeout(timer); delExpense(b.getAttribute("data-del")); return; }
+      armed = true;
+      b.textContent = "정말 삭제?";
+      b.classList.add("armed");
+      timer = setTimeout(function(){
+        armed = false; b.textContent = "삭제"; b.classList.remove("armed");
+      }, 4000);
+    });
+  });
+  Array.prototype.forEach.call(t.querySelectorAll("[data-edit]"), function(b){
+    b.addEventListener("click", function(){ startEdit(b.getAttribute("data-edit")); });
+  });
+}
+
+/* ---------- render: settlement ---------- */
+function renderSettlement(c){
+  var st = el("stat");
+  var perHead = c.totalKRW ? Math.round(c.totalKRW / MEMBERS.length) : 0;
+  st.innerHTML =
+    '<div><div class="k">총 지출</div><div class="v">'+won(c.totalKRW)+'<span style="font-size:12px"> 원</span></div></div>' +
+    '<div><div class="k">기록 건수</div><div class="v">'+state.expenses.length+'</div></div>' +
+    '<div><div class="k">전원 균등 기준 1인</div><div class="v">'+won(perHead)+'</div></div>';
+
+  var tx = settle(c.bal);
+  var box = el("tx");
+  if(!tx.length){
+    box.innerHTML = '<div style="padding:16px 0; color:var(--ink-3); font-size:13.5px">' +
+      (state.expenses.length ? "모두 정산이 끝났습니다. 주고받을 돈이 없습니다." : "지출을 기록하면 여기에 누가 누구에게 얼마를 보내면 되는지 나옵니다.") + '</div>';
+  } else {
+    box.innerHTML = tx.map(function(t,i){
+      return '<div class="txrow">' +
+        '<div class="arrow"><em>'+esc(t.from)+'</em><span class="ar">→</span><em>'+esc(t.to)+'</em></div>' +
+        '<div class="val">'+won(t.amount)+' 원</div>' +
+        '<button class="mini" data-paid="'+i+'">송금 완료</button>' +
+      '</div>';
+    }).join("");
+    Array.prototype.forEach.call(box.querySelectorAll("[data-paid]"), function(b){
+      b.addEventListener("click", function(){
+        var t = tx[Number(b.getAttribute("data-paid"))];
+        putPayment({id:uid(), from:t.from, to:t.to, amount:t.amount, ts:Date.now()});
+      });
+    });
+  }
+
+  var dl = el("doneList");
+  if(state.payments.length){
+    dl.hidden = false;
+    dl.innerHTML = '<div style="color:var(--ink-2)">송금 완료 기록</div>' + state.payments.slice().sort(function(a,b){return a.ts-b.ts;}).map(function(p){
+      return '<div class="d"><span class="settled">✓</span><span>'+esc(p.from)+' → '+esc(p.to)+' '+won(p.amount)+'원</span>' +
+        '<button class="iconbtn" data-unpay="'+p.id+'">취소</button></div>';
+    }).join("");
+    Array.prototype.forEach.call(dl.querySelectorAll("[data-unpay]"), function(b){
+      b.addEventListener("click", function(){ delPayment(b.getAttribute("data-unpay")); });
+    });
+  } else { dl.hidden = true; dl.innerHTML = ""; }
+}
+
+/* ---------- render: per-person detail ---------- */
+function renderDetail(c){
+  var t = el("detail");
+  var head = '<thead><tr><th>사람</th><th class="r">낸 돈 (결제)</th><th class="r">쓴 돈 (분담)</th><th class="r">차액</th><th class="r">이미 송금</th><th class="r">최종</th></tr></thead>';
+  var body = MEMBERS.map(function(m){
+    var moved = 0;
+    state.payments.forEach(function(p){ if(p.from===m) moved += p.amount; if(p.to===m) moved -= p.amount; });
+    var raw = (c.paid[m]||0) - (c.used[m]||0);
+    var fin = Math.round(c.bal[m]||0);
+    return '<tr><td>'+esc(m)+'</td>' +
+      '<td class="r num">'+won(c.paid[m]||0)+'</td>' +
+      '<td class="r num">'+won(c.used[m]||0)+'</td>' +
+      '<td class="r num">'+(raw>=0?"+":"-")+won(Math.abs(raw))+'</td>' +
+      '<td class="r num" style="color:var(--ink-3)">'+(moved?((moved>0?"+":"-")+won(Math.abs(moved))):"-")+'</td>' +
+      '<td class="r num" style="color:'+(fin>0?"var(--pos)":(fin<0?"var(--neg)":"var(--ink-3)"))+'">'+(fin===0?"0":(fin>0?"+":"-")+won(Math.abs(fin)))+'</td></tr>';
+  }).join("");
+  t.innerHTML = head + "<tbody>" + body + "</tbody>";
+}
+
+function render(){
+  var c = compute();
+  renderBalances(c);
+  renderLedger();
+  renderSettlement(c);
+  renderDetail(c);
+  ["SEK","DKK"].forEach(function(cur){
+    var inp = el("rate"+cur);
+    if(document.activeElement !== inp) inp.value = state.rates[cur];
+  });
+}
+
+/* ---------- form ---------- */
+function buildChips(){
+  var pc = el("payerChips"); pc.innerHTML = "";
+  MEMBERS.forEach(function(m){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = m;
+    b.setAttribute("aria-pressed", String(form.payer === m));
+    b.addEventListener("click", function(){ form.payer = m; buildChips(); });
+    pc.appendChild(b);
+  });
+
+  var tc = el("partChips"); tc.innerHTML = "";
+  var all = document.createElement("button");
+  all.type = "button"; all.className = "chip ghost";
+  all.textContent = form.parts.length === MEMBERS.length ? "전체 해제" : "전체 선택";
+  all.setAttribute("aria-pressed","false");
+  all.addEventListener("click", function(){
+    form.parts = form.parts.length === MEMBERS.length ? [] : MEMBERS.slice();
+    buildChips(); buildCustom();
+  });
+  tc.appendChild(all);
+  MEMBERS.forEach(function(m){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = m;
+    b.setAttribute("aria-pressed", String(form.parts.indexOf(m) >= 0));
+    b.addEventListener("click", function(){
+      var i = form.parts.indexOf(m);
+      if(i >= 0) form.parts.splice(i,1); else form.parts.push(m);
+      form.parts = MEMBERS.filter(function(x){ return form.parts.indexOf(x) >= 0; });
+      buildChips(); buildCustom(); checkForm();
+    });
+    tc.appendChild(b);
+  });
+}
+
+function buildCustom(){
+  var g = el("customGrid");
+  g.hidden = form.mode !== "custom";
+  if(form.mode !== "custom"){ g.innerHTML = ""; return; }
+  g.innerHTML = "";
+  form.parts.forEach(function(m){
+    var d = document.createElement("div"); d.className = "cg";
+    d.innerHTML = '<span>'+esc(m)+'</span>';
+    var inp = document.createElement("input");
+    inp.type = "number"; inp.step = "0.01"; inp.min = "0";
+    inp.value = form.custom[m] != null ? form.custom[m] : "";
+    inp.placeholder = "0";
+    inp.addEventListener("input", function(){ form.custom[m] = inp.value === "" ? "" : Number(inp.value); checkForm(); });
+    d.appendChild(inp);
+    g.appendChild(d);
+  });
+}
+
+function checkForm(){
+  var warn = el("formWarn"); warn.textContent = "";
+  var amount = Number(el("fAmount").value);
+  var ok = true;
+  if(!(amount > 0)) ok = false;
+  if(!form.parts.length){ warn.textContent = "같이 쓴 사람을 한 명 이상 골라 주세요."; ok = false; }
+  else if(form.mode === "custom"){
+    var sum = form.parts.reduce(function(s,m){ return s + (Number(form.custom[m]) || 0); }, 0);
+    var diff = Math.round((amount - sum) * 100) / 100;
+    if(amount > 0 && Math.abs(diff) >= 0.01){
+      warn.textContent = "지정한 금액 합계가 " + sum.toFixed(2) + " 로, 총액과 " + (diff > 0 ? diff.toFixed(2) + " 모자랍니다." : Math.abs(diff).toFixed(2) + " 초과합니다.");
+      ok = false;
+    }
+  }
+  el("submitBtn").disabled = !ok;
+  return ok;
+}
+
+function resetForm(){
+  edit.id = null;
+  el("fAmount").value = "";
+  el("fNote").value = "";
+  el("fDate").value = today();
+  form.parts = MEMBERS.slice();
+  form.mode = "equal";
+  form.custom = {};
+  el("modeEqual").setAttribute("aria-pressed","true");
+  el("modeCustom").setAttribute("aria-pressed","false");
+  el("submitBtn").textContent = "기록 추가";
+  el("cancelEdit").hidden = true;
+  el("formHint").textContent = "카드 긁은 사람과 나눠 쓴 사람을 고르면 자동으로 나뉩니다";
+  buildChips(); buildCustom(); checkForm();
+}
+
+function startEdit(id){
+  var e = state.expenses.filter(function(x){ return x.id === id; })[0];
+  if(!e) return;
+  edit.id = id;
+  el("fDate").value = e.date;
+  el("fAmount").value = e.amount;
+  el("fCur").value = e.cur;
+  el("fNote").value = e.note || "";
+  form.payer = e.payer;
+  form.parts = (e.parts || []).slice();
+  form.mode = e.mode || "equal";
+  form.custom = Object.assign({}, e.custom || {});
+  el("modeEqual").setAttribute("aria-pressed", String(form.mode === "equal"));
+  el("modeCustom").setAttribute("aria-pressed", String(form.mode === "custom"));
+  el("submitBtn").textContent = "수정 저장";
+  el("cancelEdit").hidden = false;
+  el("formHint").textContent = "기존 기록을 수정하는 중입니다";
+  buildChips(); buildCustom(); checkForm();
+  el("fAmount").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function submit(){
+  if(!checkForm()) return;
+  var e = {
+    id: edit.id || uid(),
+    date: el("fDate").value || today(),
+    amount: Number(el("fAmount").value),
+    cur: el("fCur").value,
+    payer: form.payer,
+    parts: form.parts.slice(),
+    mode: form.mode,
+    custom: form.mode === "custom" ? form.parts.reduce(function(o,m){ o[m] = Number(form.custom[m]) || 0; return o; }, {}) : {},
+    note: el("fNote").value.trim(),
+    ts: edit.id ? (state.expenses.filter(function(x){return x.id===edit.id;})[0] || {}).ts || Date.now() : Date.now()
+  };
+  putExpense(e);
+  resetForm();
+}
+
+/* ---------- export ---------- */
+function summaryText(){
+  var c = compute();
+  var tx = settle(c.bal);
+  var L = [];
+  L.push("■ 북유럽 여행 정산 (환율 1 SEK = " + fmtRate(state.rates.SEK) + "원, 1 DKK = " + fmtRate(state.rates.DKK) + "원)");
+  L.push("총 지출 " + won(c.totalKRW) + "원 / " + state.expenses.length + "건");
+  L.push("");
+  L.push("[1인별]");
+  MEMBERS.forEach(function(m){
+    var v = Math.round(c.bal[m]||0);
+    L.push("- " + m + ": 낸 돈 " + won(c.paid[m]||0) + " / 쓴 돈 " + won(c.used[m]||0) +
+      " → " + (v>0 ? "받을 돈 " + won(v) : (v<0 ? "보낼 돈 " + won(-v) : "정산 완료")));
+  });
+  L.push("");
+  L.push("[송금]");
+  if(!tx.length) L.push("- 주고받을 돈 없음");
+  tx.forEach(function(t){ L.push("- " + t.from + " → " + t.to + " " + won(t.amount) + "원"); });
+  L.push("");
+  L.push("[내역]");
+  state.expenses.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; }).forEach(function(e){
+    L.push("- " + e.date + " " + (e.note||"(내용 없음)") + " / " + fmtAmt(e.amount, e.cur) + " " + e.cur +
+      " = " + won(toKRW(e.amount,e.cur)) + "원 / 결제 " + e.payer + " / " + (e.parts||[]).join(",") +
+      (e.mode==="custom" ? " (금액 직접 지정)" : " (균등)"));
+  });
+  return L.join("\n");
+}
+
+function showBox(text){
+  var b = el("exportBox");
+  b.hidden = false; b.value = text; b.select();
+  el("importRow").hidden = true;
+}
+
+/* ---------- wiring ---------- */
+function wire(){
+  el("fDate").value = today();
+  buildChips(); buildCustom(); checkForm();
+
+  el("fAmount").addEventListener("input", checkForm);
+  el("submitBtn").addEventListener("click", submit);
+  el("cancelEdit").addEventListener("click", resetForm);
+
+  el("modeEqual").addEventListener("click", function(){
+    form.mode = "equal";
+    el("modeEqual").setAttribute("aria-pressed","true");
+    el("modeCustom").setAttribute("aria-pressed","false");
+    buildCustom(); checkForm();
+  });
+  el("modeCustom").addEventListener("click", function(){
+    form.mode = "custom";
+    el("modeEqual").setAttribute("aria-pressed","false");
+    el("modeCustom").setAttribute("aria-pressed","true");
+    buildCustom(); checkForm();
+  });
+
+  CURS.forEach(function(){});
+  ["SEK","DKK"].forEach(function(cur){
+    el("rate"+cur).addEventListener("change", function(){
+      var v = Number(el("rate"+cur).value);
+      if(v > 0){ state.rates[cur] = v; putConfig(); render(); }
+    });
+  });
+
+  el("btnSummary").addEventListener("click", function(){ showBox(summaryText()); });
+  el("btnJson").addEventListener("click", function(){
+    showBox(JSON.stringify({rates:state.rates, expenses:state.expenses, payments:state.payments}, null, 2));
+  });
+  el("btnImport").addEventListener("click", function(){
+    var b = el("exportBox"); b.hidden = false; b.value = ""; b.placeholder = "백업해 둔 JSON을 여기에 붙여넣고 아래 버튼을 누르세요"; b.focus();
+    el("importRow").hidden = false;
+  });
+  el("btnImportGo").addEventListener("click", function(){
+    try{
+      var o = JSON.parse(el("exportBox").value);
+      if(o.rates) state.rates = Object.assign({KRW:1}, o.rates);
+      if(Array.isArray(o.expenses)){
+        if(db){ o.expenses.forEach(function(e){ if(e && e.id) db.doc("expenses/"+e.id).set(e).catch(noteErr); }); }
+        else state.expenses = o.expenses;
+      }
+      if(Array.isArray(o.payments)){
+        if(db){ o.payments.forEach(function(p){ if(p && p.id) db.doc("payments/"+p.id).set(p).catch(noteErr); }); }
+        else state.payments = o.payments;
+      }
+      putConfig(); if(!db) saveLocal();
+      el("exportBox").hidden = true; el("importRow").hidden = true;
+      render();
+    }catch(err){
+      el("statusText").textContent = "JSON을 읽지 못했습니다. 형식을 확인해 주세요.";
+    }
+  });
+  el("btnClose").addEventListener("click", function(){ el("exportBox").hidden = true; el("importRow").hidden = true; });
+}
+
+/* ---------- boot ---------- */
+loadLocal();
+wire();
+render();
+el("statusText").textContent = "이 브라우저에만 저장 중";
+
+function fbAdapter(root){
+  function toDoc(path){
+    if(path === "trip/config") return root.collection("meta").doc("config");
+    var seg = path.split("/");
+    return root.collection(seg[0]).doc(seg[1]);
+  }
+  function wrapErr(cb){ return function(e){ if(cb) cb({code:(e && e.code) || "unavailable", message:(e && e.message) || ""}); }; }
+  return {
+    doc: function(path){
+      var ref = toDoc(path);
+      return {
+        set: function(d){ return ref.set(d); },
+        delete: function(){ return ref.delete(); },
+        onSnapshot: function(next, err){
+          return ref.onSnapshot(function(s){
+            next({ exists: s.exists, data: function(){ return s.data(); } });
+          }, wrapErr(err));
+        }
+      };
+    },
+    collection: function(name){
+      return {
+        onSnapshot: function(next, err){
+          return root.collection(name).onSnapshot(function(s){
+            next({ docs: s.docs.map(function(d){ return { id:d.id, data:function(){ return d.data(); } }; }) });
+          }, wrapErr(err));
+        }
+      };
+    }
+  };
+}
+
+if(window.firebase && window.FIREBASE_CONFIG && FIREBASE_CONFIG.projectId){
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    var root = firebase.firestore().collection("trips").doc(window.TRIP_ID || "trip");
+    db = fbAdapter(root);
+    el("status").querySelector(".dot").classList.add("live");
+    el("statusText").textContent = "모두가 같은 기록을 봅니다 (실시간 공유)";
+
+    db.doc("trip/config").onSnapshot(function(snap){
+      if(snap.exists){
+        var v = snap.data() || {};
+        if(v.rates){ state.rates = Object.assign({KRW:1}, v.rates); render(); }
+      } else {
+        db.doc("trip/config").set({rates:state.rates, updatedAt:Date.now()}).catch(function(){});
+      }
+    }, noteErr);
+
+    db.collection("expenses").onSnapshot(function(snap){
+      state.expenses = snap.docs.map(function(d2){ return Object.assign({id:d2.id}, d2.data()); });
+      render();
+    }, noteErr);
+
+    db.collection("payments").onSnapshot(function(snap){
+      state.payments = snap.docs.map(function(d2){ return Object.assign({id:d2.id}, d2.data()); });
+      render();
+    }, noteErr);
+  }catch(err){
+    db = null;
+    el("statusText").textContent = "실시간 공유 연결 실패 · 이 브라우저에만 저장 중";
+  }
+}
+})();
+</script>
+</body>
+</html>
